@@ -1,0 +1,27 @@
+machine:
+  timezone:
+    Asia/Tokyo
+  ruby:
+    version:
+      2.3.1
+
+dependencies:
+  pre:
+    - gem install reveal-ck --no-ri --no-doc
+
+test:
+  override:
+    - cd "${CIRCLE_BRANCH}"
+    - reveal-ck generate
+    - mv slides docs
+
+deployment:
+  github:
+    branch: gh-pages
+    commands:
+      - git config --global user.name chroju
+      - git config --global user.email chor.chroju@gmail.com
+      - git add .
+      - git commit -m ":rocket: Circle CI deploy"
+      - git push git@github.com:chroju/talks gh-pages
+
