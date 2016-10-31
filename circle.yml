@@ -13,6 +13,7 @@ test:
   override:
     - cd "${CIRCLE_BRANCH}"
     - reveal-ck generate
+    - cd ..
     - mv slides docs
 
 deployment:
@@ -21,7 +22,7 @@ deployment:
     commands:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
-      - git add .
-      - git commit -m ":rocket: Circle CI deploy"
+      - git add --all
+      - git commit -m "Circle CI deploy"
       - git push git@github.com:chroju/talks gh-pages
 
