@@ -1,3 +1,9 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+      - master
+
 machine:
   timezone:
     Asia/Tokyo
@@ -11,18 +17,16 @@ dependencies:
 
 test:
   override:
-    - cd "${CIRCLE_BRANCH}"
-    - reveal-ck generate
-    - cd ..
-    - mv slides docs
+    - cd /home/ubuntu/talks/$CIRCLE_BRANCH && reveal-ck generate && cp -r slides ../docs
 
 deployment:
   github:
-    branch: gh-pages
+    branch: /.*/
     commands:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
-      - git add --all
+      - git checkout master
+      - git add docs/*
       - git commit -m "Circle CI deploy"
-      - git push git@github.com:chroju/talks gh-pages
+      - git push git@github.com:chroju/talks master
 
