@@ -21,7 +21,7 @@ test:
 
 deployment:
   github:
-    branch: .*
+    branch: /.*/
     commands:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
