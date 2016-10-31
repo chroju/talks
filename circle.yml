@@ -25,8 +25,8 @@ deployment:
     commands:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
-      - git checkout -b gh-pages
+      - git checkout master
       - git add --all
       - git commit -m "Circle CI deploy"
-      - git push git@github.com:chroju/talks gh-pages
+      - git push git@github.com:chroju/talks master
 
