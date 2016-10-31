@@ -17,9 +17,7 @@ dependencies:
 
 test:
   override:
-    - cd /home/ubuntu/talks/$CIRCLE_BRANCH
-    - reveal-ck generate
-    - cd /home/ubuntu/talks
+    - cd /home/ubuntu/talks/$CIRCLE_BRANCH && reveal-ck generate && cd /home/ubuntu/talks
     - mv slides docs
 
 deployment:
