@@ -1,3 +1,9 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+      - master
+
 machine:
   timezone:
     Asia/Tokyo
@@ -18,6 +24,7 @@ test:
 
 deployment:
   github:
+    branch: .*
     commands:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
