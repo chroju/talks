@@ -10,13 +10,22 @@ machine:
   ruby:
     version:
       2.3.1
+  node:
+    version:
+      7.0.0
 
 dependencies:
+  cache_directories:
+    - "/opt/circleci/.rvm/gems"
+    - "/home/ubuntu/talks/node_modules"
   pre:
     - gem install reveal-ck --no-ri --no-doc
+    - npm install
 
 test:
   override:
+    - npm run textlint $CIRCLE_BRANCH
+  post:
     - cd /home/ubuntu/talks/$CIRCLE_BRANCH && reveal-ck generate && cp -r slides/* ../
 
 deployment:
