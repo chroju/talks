@@ -24,6 +24,11 @@ $ git checkout release
 $ rm -rf .git
 $ git init
 ```
+* Edit the last sentence in `circle.yml` to your repository.
+```
+before)  - git push git@github.com:chroju/talks gh-pages
+after)   - git push git@github.com:(your name)/talks gh-pages
+```
 * `git push`, and integrates with your CircleCI.
 * When make a new slides, follow these steps.
 ```
