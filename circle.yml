@@ -20,7 +20,7 @@ dependencies:
 
 test:
   override:
-    - npm textlint $CIRCLE_BRANCH
+    - npm run textlint $CIRCLE_BRANCH
 
   post:
     - cd /home/ubuntu/talks/$CIRCLE_BRANCH && reveal-ck generate && cp -r slides/* ../
