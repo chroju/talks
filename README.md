@@ -33,7 +33,7 @@ after)   - git push git@github.com:(your name)/talks gh-pages
 * When make a new slides, follow these steps.
 ```
 # checkout new branch.
-$ git checkout 160101hoge_meetup
+$ git checkout -b 160101hoge_meetup
 # make the directory the same name as the branch.
 $ mkdir 160101hoge_meetup
 # make the markdown and `config.yml` for reveal-ck.
