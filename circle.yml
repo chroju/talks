@@ -10,6 +10,9 @@ machine:
   ruby:
     version:
       2.3.1
+  node:
+    version:
+      0.10.22
 
 dependencies:
   pre:
@@ -17,6 +20,9 @@ dependencies:
 
 test:
   override:
+    - npm textlint $CIRCLE_BRANCH
+
+  post:
     - cd /home/ubuntu/talks/$CIRCLE_BRANCH && reveal-ck generate && cp -r slides/* ../
 
 deployment:
