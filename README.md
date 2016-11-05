@@ -13,19 +13,19 @@ talk list
 usage (for others)
 ----
 
-# Clone this repository.
+1. Clone this repository.
 ```
 $ git clone https://github.com/chroju/talks
 ```
-# Replace this repository with yours. Checkout to `release` branch, remove `.git` directory, and execute `git init` command.
+1. Replace this repository with yours. Checkout to `release` branch, remove `.git` directory, and execute `git init` command.
 ```
 $ cd talks
 $ git checkout release
 $ rm -rf .git
 $ git init
 ```
-# `git push`, and integrates with your CircleCI.
-# When make a new slides, follow these steps.
+1. `git push`, and integrates with your CircleCI.
+1. When make a new slides, follow these steps.
 ```
 # checkout new branch.
 $ git checkout 160101hoge_meetup
