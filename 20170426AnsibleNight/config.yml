@@ -1,0 +1,4 @@
+theme: "white"
+transition: "none"
+author: "chroju"
+title: "Ansible Roleを継続的に自動アップデートする"
