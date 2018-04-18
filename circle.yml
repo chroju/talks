@@ -35,7 +35,7 @@ deployment:
       - git config --global user.name chroju
       - git config --global user.email chor.chroju@gmail.com
       - rm .ruby-version
-      - git checkout gh-pages
+      - git checkout -b gh-pages
       - git add --all
       - git commit -m "Circle CI deploy"
       - git push git@github.com:chroju/talks gh-pages
