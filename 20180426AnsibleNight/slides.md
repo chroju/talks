@@ -68,7 +68,7 @@ $ ansible-galaxy install bennojoy.nginx
 
 ---
 
-## Roleの更新をどう反映する？
+## Roleの更新をPlaybookにどう反映する？
 
 * Roleの更新をいかに各Playbook側でキャッチするのか？
 * PlaybookごとにRoleの更新→テストを全部やるのか？
@@ -116,10 +116,10 @@ $ ansible-galaxy install bennojoy.nginx
 
 ## ansible-galaxyにupdateはない
 
-* 残念ながら、現時点で `ansible-galaxy update` は無い
+* 残念ながら現時点で `ansible-galaxy update` は無い
 * roleのバージョン管理機能実装はproposalが出ている
     * [role versioning · Issue #23 · ansible/proposals](https://github.com/ansible/proposals/issues/23)
-* 現時点では `git submodule` とかの方がupdateはしやすい
+* `git submodule` とかの方がupdateはしやすい（かも）
 
 ---
 
@@ -129,9 +129,11 @@ $ ansible-galaxy install bennojoy.nginx
 $ git checkout check-update
 
 $ before=$(git submodule status)
- 00e6459bc0c3c2cba1b2d84c55d9c03831529617 mysql (remotes/origin/HEAD)
+ 01e6459bc0c3c2cba1b2d84c55d9c03831529617 roles/mysql (heads/master)
 
-$ git submodule update
+$ cd roles/mysql
+$ git pull
+$ cd -
 $ after=$(git submodule status)
 
 $ if [[ "$before" != "$after" ]]; then ...
@@ -148,7 +150,7 @@ Roleを更新するとき、Playbook側でなるべく作業が必要ないよ�
 * Roleの破壊的な変更はなるべくしない
     * Role名や変数名は変えない
     * 変数をdeprecatedにするなら、debug moduleでその旨を実行時に出力するなど、気付かせてあげるべき
-* 変数追加のときは必ず `defaults/` で初期値を設定する
+* 変数追加時は必ず `defaults/` で初期値を設定する
 
 ---
 
