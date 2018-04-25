@@ -1,0 +1,6 @@
+author: "chroju"
+title: "Ansible Roleの継続的自動Update"
+theme: "solarized"
+transition: "none"
+center: false
+progress: true
