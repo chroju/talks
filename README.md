@@ -1,14 +1,15 @@
 talks
 ========
 
-This is the chroju's briefing papers of LTs. Documents that are here markdown only, so if you would like to read slide documents, please visit [my Speaker Deck account](https://speakerdeck.com/chroju).
+The chroju's manuscripts for the presentation. Here there is markdown only, so if you would like to read slide pdf, please visit [my Speaker Deck account](https://speakerdeck.com/chroju).
 
-This repository is made for the Continuoues Integration, that convert a markdown file to slides. You could use it by forking this repository.
+This repository is made for the Continuoues Integration, that convert a markdown file to slides with CircleCI. You could use it by forking this repository.
 
 talk list
 ----
 
-* ポエム駆動転職 ＠雑兵Meetup#7 (2016-11-04)
+* [Ansible Roleの継続的自動Update](https://speakerdeck.com/chroju/ansible-rolefalseji-sok-de-zi-dong-update) ＠Ansible Night in Tokyo 2018.04 (2018-04-25)
+* [ポエム駆動転職](https://speakerdeck.com/chroju/poemuqu-dong-zhuan-zhi) ＠雑兵MeetUp #7 (2016-11-04)
 
 usage (for others)
 ----
