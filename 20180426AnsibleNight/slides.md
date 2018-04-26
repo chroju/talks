@@ -114,33 +114,39 @@ $ ansible-galaxy install bennojoy.nginx
 
 ---
 
-## ansible-galaxyにupdateはない
+## `ansible-galaxy` での実現
 
-* 残念ながら現時点で `ansible-galaxy update` は無い
-* roleのバージョン管理機能実装はproposalが出ている
-    * [role versioning · Issue #23 · ansible/proposals](https://github.com/ansible/proposals/issues/23)
-* `git submodule` とかの方がupdateはしやすい（かも）
+* やりたいのは requirements.yml の記載バージョンから更新があるかの確認
+* しかし requirements.yml にバージョン指定されていると、`install -fr` しても最新は入らない
+* 最新を追いかける手段がない😫
 
 ---
 
-## `git submodule` でのサンプル
+## バージョンをlockする
+
+* requirements.yml を2種類用意する(Gemfile.lockの発想)
+* requirements.lock.yml にバージョン指定を書く
+  * 普段の実行時にはこちらを使う
+* requirements.yml はバージョン指定しない
+  * 更新確認ではこちらを使い、lock.ymlより新しいバージョンが入るか確認する
+
+---
+
+## sample
 
 ```
-$ git checkout check-update
+# まずlockからインストール
+$ ansible-galaxy install -r requirements.lock.yml
+$ ansible-galaxy list -p ./roles > before
 
-$ before=$(git submodule status)
- 01e6459bc0c3c2cba1b2d84c55d9c03831529617 roles/mysql (heads/master)
+# 次にrequirements.ymlから
+$ ansible-galaxy install -fr requirements.yml
+$ ansible-galaxy list -p ./roles > after
 
-$ cd roles/mysql
-$ git pull
-$ cd -
-$ after=$(git submodule status)
-
-$ if [[ "$before" != "$after" ]]; then ...
+$ if [[ $(diff before after | wc -l) -gt 0 ]]; then ...
 
 # この後でtestしてpushしてPRして通知
 ```
-
 ---
 
 ## 余談: Roleの後方互換性
@@ -157,6 +163,5 @@ Roleを更新するとき、Playbook側でなるべく作業が必要ないよ�
 ## まとめ
 
 * Ansibleでも依存モジュールを継続的自動更新をするべき
-* そのためにもまずはCIに載せるところから
-* `ansible-galaxy update` コマンドがほしい
-* 何かいい方法があったら教えてほしい
+* `ansible-galaxy obsolete` コマンドがほしい
+* 何かいい方法があったら教えてほしいです🙇
