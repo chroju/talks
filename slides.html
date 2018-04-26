@@ -1,0 +1,229 @@
+<section>
+
+<h1>Ansible Roleの継続的自動Update</h1>
+
+<p><strong>Ansible Night in Tokyo 2018.04</strong></p>
+
+<p>chroju</p>
+
+</section>
+<section>
+
+<h2>自己紹介</h2>
+
+<p><img src="https://en.gravatar.com/userimage/112557146/b0bb9918ea567d117d4745f14fb3822a.jpg?size=200" alt=""></p>
+
+<p><strong>chroju</strong></p>
+
+<ul>
+  <li>
+<a href="https://github.com/chroju">GitHub</a> / <a href="http://qiita.com/chroju">Qiita</a> / <a href="https://twitter.com/chroju">Twitter</a>
+</li>
+  <li>インフラの面倒を見たり運用の改善したりする仕事</li>
+  <li>Ansible / Terraform / influxDB / Python あたり</li>
+</ul>
+
+</section>
+<section>
+
+<h2>Infrastructure as Code におけるコードの再利用</h2>
+
+<ul>
+  <li>例えば複数のサービスでnginxを使いたい場合
+    <ul>
+      <li>🙅NG → サービスごとにコードを書く</li>
+      <li>🙆OK → 1回書いたコードを各サービスで再利用する</li>
+    </ul>
+  </li>
+  <li>コード再利用でスノーフレークサーバーを防ぐ</li>
+</ul>
+
+</section>
+<section>
+
+<h2>Ansible Roleでの再利用</h2>
+
+<ul>
+  <li>Ansibleでコードを再利用する仕組みはAnsible Role
+    <ul>
+      <li>task, handler, 変数, template等をまとめてモジュール化</li>
+    </ul>
+  </li>
+  <li>Roleの管理は <code>ansible-galaxy</code> コマンドと <code>requirements.yml</code> で可能</li>
+</ul>
+
+<pre><code>$ ansible-galaxy install bennojoy.nginx
+</code></pre>
+
+<pre><code class="language-yaml:requirements.yml">- src: https://github.com/bennojoy/nginx
+  version: master
+  name: nginx_role
+</code></pre>
+
+</section>
+<section>
+
+<h2>Roleを再利用</h2>
+
+<p><img src="image/install_role.png" alt=""></p>
+
+</section>
+<section>
+
+<h2>再利用 …</h2>
+
+<p><img src="image/install_role2.png" alt=""></p>
+
+</section>
+<section>
+
+<h2>Roleを更新すると？</h2>
+
+<p><img src="image/install_role3.png" alt=""></p>
+
+</section>
+<section>
+
+<p><strong>Roleを使い回すほど管理が大変になる</strong></p>
+
+</section>
+<section>
+
+<h2>Roleの更新をPlaybookにどう反映する？</h2>
+
+<ul>
+  <li>Roleの更新をいかに各Playbook側でキャッチするのか？</li>
+  <li>PlaybookごとにRoleの更新→テストを全部やるのか？</li>
+  <li>1000 Playbookあったら？</li>
+</ul>
+
+<p><strong>継続的自動的にやるしかないのでは？</strong></p>
+
+</section>
+<section>
+
+<h2>ソフトウェア開発に倣う</h2>
+
+<blockquote>
+  <p>Infrastructure as Codeは、ソフトウェア開発のプラクティスをインフラのオートメーションに活かすアプローチだ。 (Kief Morris『Infrastructure as Code』p.5)</p>
+</blockquote>
+
+<p><img src="https://www.oreilly.co.jp/books/images/picture978-4-87311-796-6.gif" alt=""></p>
+
+</section>
+<section>
+
+<h2>Role ≒ プログラムのpackage</h2>
+
+<ul>
+  <li>Ansible RoleはRubyGemsやJSのyarnなど、プログラムで言うpackageやmoduleと似た位置付け</li>
+  <li>ソフトウェアでもimported packageの継続的更新は課題になっている
+    <ul>
+      <li><a href="http://blog.willnet.in/entry/2018/03/18/163405">定期的にyarn updateするには - おもしろwebサービス開発日記</a></li>
+      <li><a href="http://blog.kyanny.me/entry/2012/11/06/003902">Jenkins に bundle update した上で Pull Request させる - @kyanny’s blog</a></li>
+    </ul>
+  </li>
+</ul>
+
+</section>
+<section>
+
+<h2>Jenkins !! (or CI)</h2>
+
+<p><img src="image/jenkins.png" alt=""></p>
+
+</section>
+<section>
+
+<h2>RoleもCIで継続的update</h2>
+
+<p>こんな感じでうまくいきそう？</p>
+
+<ol>
+  <li>更新確認用のブランチにcheckout</li>
+  <li>installしているroleの更新を確認</li>
+  <li>更新があればupdate</li>
+  <li>update後にserverspec等テストを回す</li>
+  <li>テストが通ったらJenkinsからPR</li>
+  <li>結果をslackに通知</li>
+</ol>
+
+</section>
+<section>
+
+<h2>
+<code>ansible-galaxy</code> での実現</h2>
+
+<ul>
+  <li>やりたいのは requirements.yml の記載バージョンから更新があるかの確認</li>
+  <li>しかし requirements.yml にバージョン指定されていると、<code>install -fr</code> しても最新は入らない</li>
+  <li>最新を追いかける手段がない😫</li>
+</ul>
+
+</section>
+<section>
+
+<h2>バージョンをlockする</h2>
+
+<ul>
+  <li>requirements.yml を2種類用意する(Gemfile.lockの発想)</li>
+  <li>requirements.lock.yml にバージョン指定を書く
+    <ul>
+      <li>普段の実行時にはこちらを使う</li>
+    </ul>
+  </li>
+  <li>requirements.yml はバージョン指定しない
+    <ul>
+      <li>更新確認ではこちらを使い、lock.ymlより新しいバージョンが入るか確認する</li>
+    </ul>
+  </li>
+</ul>
+
+</section>
+<section>
+
+<h2>sample</h2>
+
+<pre><code># まずlockからインストール
+$ ansible-galaxy install -r requirements.lock.yml
+$ ansible-galaxy list -p ./roles &gt; before
+
+# 次にrequirements.ymlから
+$ ansible-galaxy install -fr requirements.yml
+$ ansible-galaxy list -p ./roles &gt; after
+
+$ if [[ $(diff before after | wc -l) -gt 0 ]]; then ...
+
+# この後でtestしてpushしてPRして通知
+</code></pre>
+
+</section>
+<section>
+
+<h2>余談: Roleの後方互換性</h2>
+
+<p>Roleを更新するとき、Playbook側でなるべく作業が必要ないよう配慮する</p>
+
+<ul>
+  <li>Roleの破壊的な変更はなるべくしない
+    <ul>
+      <li>Role名や変数名は変えない</li>
+      <li>変数をdeprecatedにするなら、debug moduleでその旨を実行時に出力するなど、気付かせてあげるべき</li>
+    </ul>
+  </li>
+  <li>変数追加時は必ず <code>defaults/</code> で初期値を設定する</li>
+</ul>
+
+</section>
+<section>
+
+<h2>まとめ</h2>
+
+<ul>
+  <li>Ansibleでも依存モジュールを継続的自動更新をするべき</li>
+  <li>
+<code>ansible-galaxy obsolete</code> コマンドがほしい</li>
+  <li>何かいい方法があったら教えてほしいです🙇</li>
+</ul>
+
+</section>
